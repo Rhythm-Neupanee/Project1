@@ -19,8 +19,8 @@ static void displayMenu() {
 
 int main() {
     ReservationManager manager;
-    manager.loadResourcesFromFile("../data/resources.txt");   // Load resources from a file
-    manager.loadReservationsFromFile("../data/reservations.txt");
+    manager.loadResourcesFromFile("data/resources.txt");   // Load resources from a file
+    manager.loadReservationsFromFile("data/reservations.txt");
 
     int choice =0;
     while (true) {
