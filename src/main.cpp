@@ -9,10 +9,10 @@ static void displayMenu() {
     std::cout << "1. View Resources\n";
     std::cout << "2. Create Reservation\n";
     std::cout << "3. Cancel Reservation\n";
-    std::cout << "4. View Active Reservations (Linked List)\n";
-    std::cout << "5. View Waiting Lists (Queues)\n";
-    std::cout << "6. Undo Cancellation (Stack Pop)\n";
-    std::cout << "7. View Cancellation History (Stack)\n";
+    std::cout << "4. View Active Reservations\n";
+    std::cout << "5. View Waiting Lists\n";
+    std::cout << "6. Undo Cancellation\n";
+    std::cout << "7. View Cancellation History\n";
     std::cout << "8. Exit\n";
     std::cout << "Enter Choice: ";
 }
@@ -51,7 +51,7 @@ int main() {
                 std::getline(std::cin, studentName);
                 std::cout << "Enter Resource ID: ";
                 std::cin >> resourceID;
-                std::cout << "Enter Reservation Date (YYYY-MM-DD): ";
+                std::cout << "Enter Reservation Date (mm/dd/yyyy): ";
                 std::cin >> date;
                 manager.createReservation(studentID, studentName, resourceID, date);
                 break;
