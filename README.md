@@ -1,8 +1,7 @@
 # Campus Resource Reservation System
 
 ## Project Overview
-This application is a menu-driven C++ software system that manages campus resources (e.g., study rooms, laptops, calculators, lab equipment). It tracks active reservations using a custom Singly Linked List, handles resource waiting lists using custom FIFO Queues, and manages cancellation history and undo actions using a custom LIFO Stack.
-
+This application is a menu‑driven C++ software system that manages campus resources such as study rooms, laptops, calculators and lab equipment. This menu‑driven C++ software system records reservations using a custom Singly Linked List. This application also handles waiting lists for campus resources with custom FIFO Queues. This application keeps a cancellation history. Supports undo actions, by using a custom LIFO Stack.
 ---
 
 ## Folder Structure
