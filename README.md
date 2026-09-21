@@ -37,8 +37,7 @@ Project1/
 - Custom FIFO Queue: Handles waitlisted students in First-In, First-Out order when an item is unavailable.
 - Custom LIFO Stack: Tracks system-wide cancelled reservation to enable Last-In, First-Out undo Functionality.
 
-## Compilation & Execution Instructions
-This project is configured and fully tested for the UNT CSE CELL machine environment using g++
+## Execution Instructions
 1. Open your terminal and navigate to the project root directory:
 ```bash
 cd Project1
