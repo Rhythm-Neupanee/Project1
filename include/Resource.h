@@ -26,8 +26,6 @@ private:
     // display the resource information
     void setAvailability(bool availability);
 
-    void display();
-
     void display() const;  // sets the availability status of the resource
     void displayWaitingQueue() const; // displays the waiting queue of the resource
 };
