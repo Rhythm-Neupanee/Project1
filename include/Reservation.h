@@ -2,6 +2,7 @@
 #define RESERVATION_H
 
 #include <string>
+#include <vector>
 //stores information about one reservation
 class Reservation {
 private:
@@ -56,6 +57,12 @@ private:
 
     void displayInOrder(ReservationNode* node) const; //displays reservations in ascending ID order
 
+    void collectReservations(ReservationNode* node, std::vector<Reservation>& reservations) const;// Merge sort helper functions 
+
+    void mergeSort(std::vector<Reservation>& reservations, int left, int right);
+
+    void merge(std::vector<Reservation>& reservations, int left, int mid, int right);
+
 public:
 
     ReservationList(); //creates an empty reservation tree
@@ -79,6 +86,9 @@ public:
 
     //displays all reservation in ascending ID order 
     void displayAllReservations() const;
+
+    // Displays reservations sorted using Merge sort 
+    void displayReservationsMergeSort() const;
 
     //returns true if the tree is empty
     bool isEmpty() const;
