@@ -2,52 +2,86 @@
 #define RESERVATION_H
 
 #include <string>
-#include <utility>
-
-// represents a reservation made by students
+//stores information about one reservation
 class Reservation {
 private:
-    std::string reservationID; // unique id of the reservation
-    std::string studentID; // unique id of the student making the reservation
-    std::string studentName; // name of the student making the reservation 
-    std::string resourceID; // unique id of the resource being reserved
-    std::string date; // date of the reservation
+    std::string reservationID; //unique reservation ID
+    std::string studentID; //ID of the student
+    std::string studentName; //name of the student
+    std::string resourceID; //ID of the reserved resource
+    std::string date; //reservation date
 
 public:
-    Reservation(); // default constructor
-    Reservation( std::string reservationID,  std::string studentID, std::string studentName,  std::string resourceID,  std::string date);
+    Reservation() = default; //default constructor
 
-    // getting the value
-    [[nodiscard]] std::string getReservationID() const;
-    [[nodiscard]] std::string getStudentID() const;
-    [[nodiscard]] std::string getStudentName() const;
-    [[nodiscard]] std::string getResourceID() const;
-    [[nodiscard]] std::string getDate() const;
+    //constructor that initializes all reservation information
+    Reservation(std::string reservationID, std::string studentID, std::string studentName, std::string resourceID, std::string date);
 
-    void display() const; // display the reservation information
+    //getter functions return reservation information
+    std::string getReservationID() const;
+    std::string getStudentID() const;
+    std::string getStudentName() const;
+    std::string getResourceID() const;
+    std::string getDate() const;
+
+    //displays the reservation information
+    void display() const;
 };
 
-//structure for custom linked list
+//represents one node in the binary search tree
 struct ReservationNode {
-    Reservation data; // reservation data
-    ReservationNode* next; // pointer to the next node in the list
+    Reservation data;
+    ReservationNode* left;
+    ReservationNode* right;
 
-    ReservationNode(Reservation res) : data(std::move(res)), next(nullptr) {} // constructor to initialize the node with reservation data
+    //initializes the node with reservation data and empty children 
+    ReservationNode(const Reservation& res)
+        : data(res), left(nullptr), right(nullptr) {}
 };
 
-// linked list class to store reservations
+//manage reservations using a binary seatvh tree
 class ReservationList {
 private:
-    ReservationNode* head; // pointer to the head of the linked list
-public:
-    ReservationList(); // default constructor
-    ~ReservationList(); // destructor to free memory
+    ReservationNode* root; //points to the first node to the tree
 
-    void addReservation(const Reservation& res); // add a reservation to the list
-    bool removeReservation(const std::string& reservationID, Reservation& removedReservation); // remove a reservation from the list by ID
-    Reservation* findReservation(const std::string& reservationID) const; // find a reservation by ID
-    void displayAllReservations() const; // display all reservations in the list
-    [[nodiscard]] bool isEmpty() const; // check if the list is empty
+    ReservationNode* insertNode(ReservationNode* node, const Reservation& res); //inserts reservation in the correct position by ID
+
+    ReservationNode* findNode(ReservationNode* node, const std::string& reservationID) const; //searches for reservation by ID
+
+    ReservationNode* removeNode(ReservationNode* node, const std::string& reservationID); //removes a reservation while maintaining a BST ordering
+
+    ReservationNode* findMin(ReservationNode* node) const; //finds the smallest ID in a subtree 
+
+    void destroyTree(ReservationNode* node); //deletes all nodes to prevent memory leaks 
+
+    void displayInOrder(ReservationNode* node) const; //displays reservations in ascending ID order
+
+public:
+
+    ReservationList(); //creates an empty reservation tree
+
+    ~ReservationList(); //frees the trees dynamically allocated notes 
+
+    //prevents copying the tree, which could cause memory errors
+    ReservationList(const ReservationList&) = delete;
+    ReservationList& operator=(const ReservationList&) = delete;
+
+    //adds a reservation to the tree
+    void addReservation(const Reservation& res);
+
+    //removes reservation and saves information
+    //returns true if found and renewed, false if anything else
+    bool removeReservation(const std::string& reservationID,Reservation& removedReservation);
+
+    //returns a pointer to the reservation if found
+    //returns nullptr if the reservation does not exist
+    Reservation* findReservation(const std::string& reservationID) const;
+
+    //displays all reservation in ascending ID order 
+    void displayAllReservations() const;
+
+    //returns true if the tree is empty
+    bool isEmpty() const;
 };
 
 #endif
