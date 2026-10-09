@@ -1,33 +1,49 @@
-#ifndef Resource_H
-#define Resource_H
+```cpp
+#ifndef RESOURCE_H
+#define RESOURCE_H
 
 #include <string>
+#include <vector>
 #include "WaitingList.h"
 
-// represents the resource of the university
+// Represents one university resource
 class Resource {
 private:
-    std::string id;     //unique id for the resource
-    std::string name;   //name/description of the resource
-    std::string type;   //type of the resource or category like laptop, room, etc
-    bool isAvailable;   //availability status of the resource
-    WaitingList waitingQueue; // waiting queue for the resource
+    std::string id; // Unique resource ID
+    std::string name; // Resource name or description
+    std::string type; // Category, such as laptop or study room
+    bool isAvailable; // True if the resource is available
+    WaitingList waitingQueue; // Queue of students waiting for this resource
 
-    public:
-    Resource(); // default constructor
+public:
+    // Constructors
+    Resource();
     Resource(std::string ID, std::string Name, std::string Type, bool Availability = true);
-     
-    [[nodiscard]] std::string getId() const; // returns the unique id of the resource
-    [[nodiscard]] std::string getName() const; // returns the name/description of the resource
-    [[nodiscard]] std::string getType() const; // returns the type/category of the resource
-    [[nodiscard]] bool getAvailability() const; // returns the availability status of the resource
-    WaitingList& getWaitingQueue(); // returns the waiting queue of the resource
 
-    // display the resource information
-    void setAvailability(bool availability);
+    // Getter functions
+    [[nodiscard]] std::string getId() const;
+    [[nodiscard]] std::string getName() const;
+    [[nodiscard]] std::string getType() const;
+    [[nodiscard]] bool getAvailability() const;
 
-    void display() const;  // sets the availability status of the resource
-    void displayWaitingQueue() const; // displays the waiting queue of the resource
+    WaitingList& getWaitingQueue(); // Returns the waiting queue for this resource
+
+    void setAvailability(bool availability); // Updates resource availability
+
+    void display() const; // Displays resource information
+
+    void displayWaitingQueue() const; // Displays the resource's waiting queue
+
+    static void mergeSortResources(std::vector<Resource*>& resources); // Merge sort: sorts resource pointers by resource ID
+
+    static Resource* binarySearchResource(const std::vector<Resource*>& resources,const std::string& targetID); // Binary search: finds a resource by ID in a sorted vector
+
+private:
+
+    static void mergeSortHelper(std::vector<Resource*>& resources, int left, int right); // Recursively divides and sorts the vector
+
+    static void merge(std::vector<Resource*>& resources, int left, int mid, int right); // Merges two sorted sections
+
 };
 
 #endif
