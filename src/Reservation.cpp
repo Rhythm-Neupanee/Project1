@@ -1,12 +1,16 @@
-```cpp
+
 #include "../include/Reservation.h"
 #include <iostream>
 #include <utility>
+#include <vector>
 
-// Constructor: initializes reservation information
-Reservation::Reservation(std::string reservationID, std::string studentID, std::string studentName, std::string resourceID, std::string date) : reservationID(std::move(reservationID)), studentID(std::move(studentID)), studentName(std::move(studentName)), resourceID(std::move(resourceID)), date(std::move(date)) {}
+Reservation::Reservation() = default; // Default constructor
 
-// Getter functions return reservation information
+// Constructor
+Reservation::Reservation(std::string reservationID, std::string studentID, std::string studentName, std::string resourceID, std::string date)
+    : reservationID(std::move(reservationID)), studentID(std::move(studentID)), studentName(std::move(studentName)), resourceID(std::move(resourceID)), date(std::move(date)) {}
+
+// Getters
 std::string Reservation::getReservationID() const {
     return reservationID;
 }
@@ -27,91 +31,65 @@ std::string Reservation::getDate() const {
     return date;
 }
 
-// Displays one reservation's information
-void Reservation::display() const {
-    std::cout << "Res ID: " << reservationID << " | Student: " << studentName << " (ID: " << studentID << ")" << " | Resource ID: " << resourceID << " | Date: " << date << "\n";
+void Reservation::display() const { // Display reservation information
+    std::cout << "Reservation ID: " << reservationID << " | Student ID: " << studentID << " | Student Name: " << studentName << " | Resource ID: " << resourceID << " | Date: " << date << "\n";
 }
 
-// Constructor: creates an empty reservation tree
-ReservationList::ReservationList() : root(nullptr) {}
+ReservationNode::ReservationNode(const Reservation& reservation): data(reservation), left(nullptr), right(nullptr) {} // Create a BST node
 
-// Destructor: deletes all nodes to prevent memory leaks
-ReservationList::~ReservationList() {
+ReservationList::ReservationList() : root(nullptr) {} // Constructor for the reservation BST
+
+ReservationList::~ReservationList() { // Destructor
     destroyTree(root);
 }
 
-// Recursively deletes the left subtree, right subtree,
-// and then the current node
-void ReservationList::destroyTree(ReservationNode* node) {
+void ReservationList::destroyTree(ReservationNode* node) { // Delete all nodes in the tree
     if (node == nullptr) {
         return;
     }
 
     destroyTree(node->left);
     destroyTree(node->right);
-
     delete node;
 }
 
-// Inserts a reservation according to its reservation ID
-ReservationNode* ReservationList::insertNode(ReservationNode* node, const Reservation& res) {
+void ReservationList::addReservation(const Reservation& reservation) { // Insert a reservation into the BST
+    root = insertNode(root, reservation);
+}
 
-    // Create a new node when an empty position is found
+ReservationNode* ReservationList::insertNode(ReservationNode* node, const Reservation& reservation) { // Find the correct location for a reservation
     if (node == nullptr) {
-        return new ReservationNode(res);
+        return new ReservationNode(reservation);
     }
 
-    // Smaller IDs go into the left subtree
-    if (res.getReservationID() < node->data.getReservationID()) {
-        node->left = insertNode(node->left, res);
-    }
-    // Larger IDs go into the right subtree
-    else if (res.getReservationID() > node->data.getReservationID()) {
-        node->right = insertNode(node->right, res);
+    if (reservation.getReservationID() < node->data.getReservationID()) {
+        node->left = insertNode(node->left, reservation);
+    } else if (reservation.getReservationID() > node->data.getReservationID()) {
+        node->right = insertNode(node->right, reservation);
     }
 
-    // Duplicate IDs are ignored
-    return node;
+    return node; // Duplicate reservation IDs are ignored
 }
 
-// Adds a reservation to the binary search tree
-void ReservationList::addReservation(const Reservation& res) {
-    root = insertNode(root, res);
-}
+Reservation* ReservationList::findReservation(const std::string& reservationID) { // Search for a reservation by ID in the BST
+    ReservationNode* current = root;
 
-// Searches the tree for a reservation ID
-ReservationNode* ReservationList::findNode(ReservationNode* node, const std::string& reservationID) const {
+    while (current != nullptr) {
+        if (reservationID == current->data.getReservationID()) {
+            return &current->data;
+        }
 
-    // Stop if the node is empty or the ID matches
-    if (node == nullptr || node->data.getReservationID() == reservationID) {
-        return node;
+        if (reservationID < current->data.getReservationID()) {
+            current = current->left;
+        } else {
+            current = current->right;
+        }
     }
 
-    // Search left when the target ID is smaller
-    if (reservationID < node->data.getReservationID()) {
-        return findNode(node->left, reservationID);
-    }
-
-    // Otherwise, search right
-    return findNode(node->right, reservationID);
+    return nullptr;
 }
 
-// Returns a pointer to the reservation if found
-Reservation* ReservationList::findReservation(const std::string& reservationID) const {
-
-    ReservationNode* node = findNode(root, reservationID);
-
-    // Return nullptr if the reservation does not exist
-    if (node == nullptr) {
-        return nullptr;
-    }
-
-    return &(node->data);
-}
-
-// Finds the smallest reservation ID in a subtree
-ReservationNode* ReservationList::findMin(ReservationNode* node) const {
-    // The smallest ID is at the leftmost node
+ReservationNode* ReservationList::findMinimum(ReservationNode* node) { // Find the node with the smallest reservation ID
     while (node != nullptr && node->left != nullptr) {
         node = node->left;
     }
@@ -119,198 +97,130 @@ ReservationNode* ReservationList::findMin(ReservationNode* node) const {
     return node;
 }
 
-// Removes a reservation while maintaining BST ordering
-ReservationNode* ReservationList::removeNode(ReservationNode* node, const std::string& reservationID) {
-
-    // Base case: reservation was not found
+ReservationNode* ReservationList::removeNode(ReservationNode* node, const std::string& reservationID){ // Remove a reservation from the BST
     if (node == nullptr) {
         return nullptr;
     }
 
-    // Search the left subtree
     if (reservationID < node->data.getReservationID()) {
         node->left = removeNode(node->left, reservationID);
-    }
-    // Search the right subtree
-    else if (reservationID > node->data.getReservationID()) {
+    } else if (reservationID > node->data.getReservationID()) {
         node->right = removeNode(node->right, reservationID);
-    }
-    // Reservation was found
-    else {
-        // Case 1: no left child
-        if (node->left == nullptr) {
+    } else {
+
+        if (node->left == nullptr) { // Node has no left child
             ReservationNode* temp = node->right;
             delete node;
             return temp;
         }
 
-        // Case 2: no right child
+        // Node has no right child
         if (node->right == nullptr) {
             ReservationNode* temp = node->left;
             delete node;
             return temp;
         }
 
-        // Case 3: two children
-        // Find the smallest ID in the right subtree
-        ReservationNode* temp = findMin(node->right);
-
-        // Copy its reservation data into the current node
+        ReservationNode* temp = findMinimum(node->right); // Node has two children
         node->data = temp->data;
-
-        // Remove the duplicate node
-        node->right = removeNode(
-            node->right, temp->data.getReservationID());
+        node->right = removeNode(node->right, temp->data.getReservationID());
     }
 
     return node;
 }
 
-// Removes a reservation and saves its data
-bool ReservationList::removeReservation(const std::string& reservationID, Reservation& removedReservation) {
-
-    // Find the reservation before deleting it
-    ReservationNode* node = findNode(root, reservationID);
-
-    if (node == nullptr) {
+bool ReservationList::removeReservation(const std::string& reservationID) { // Public function to remove a reservation
+    if (findReservation(reservationID) == nullptr) {
         return false;
     }
 
-    // Save the reservation for cancellation history or undo
-    removedReservation = node->data;
-
-    // Update the tree after removal
     root = removeNode(root, reservationID);
-
     return true;
 }
 
-// Displays reservations using in-order traversal
-void ReservationList::displayInOrder(ReservationNode* node) const {
+void ReservationList::displayReservations() const { // Display reservations in ascending ID order
+    displayInOrder(root);
+}
+
+void ReservationList::displayInOrder(ReservationNode* node) const { // In-order traversal of the BST
     if (node == nullptr) {
         return;
     }
 
-    // Visit left subtree, current node, then right subtree
     displayInOrder(node->left);
     node->data.display();
     displayInOrder(node->right);
 }
 
-// Displays all reservations in BST order
-void ReservationList::displayAllReservations() const {
-    if (root == nullptr) {
-        std::cout << "No reservations found.\n";
-        return;
-    }
-
-    displayInOrder(root);
+bool ReservationList::isEmpty() const { // Check whether the BST is empty
+    return root == nullptr;
 }
 
-// Collects reservations from the tree into a vector
-void ReservationList::collectReservations(
-    ReservationNode* node,
-    std::vector<Reservation>& reservations) const {
-
+void ReservationList::collectReservations(ReservationNode* node, std::vector<Reservation>& reservations) const { // Collect reservations from the BST into a vector
     if (node == nullptr) {
         return;
     }
 
-    // Copy the current reservation into the vector
     reservations.push_back(node->data);
 
-    // Visit both subtrees
     collectReservations(node->left, reservations);
     collectReservations(node->right, reservations);
 }
 
-// Combines two sorted sections of the vector
-void ReservationList::merge(std::vector<Reservation>& reservations, int left, int mid, int right) const {
+void ReservationList::mergeSort(std::vector<Reservation>& reservations, int left, int right) const { // Sort reservations by reservation ID
+    if (left >= right) {
+        return;
+    }
 
+    int mid = left + (right - left) / 2;
+
+    mergeSort(reservations, left, mid);
+    mergeSort(reservations, mid + 1, right);
+
+    merge(reservations, left, mid, right);
+}
+
+void ReservationList::merge(std::vector<Reservation>& reservations, int left, int mid, int right) const { // Merge two sorted sections
     std::vector<Reservation> temp;
 
     int i = left;
     int j = mid + 1;
 
-    // Compare IDs and copy the smaller one first
-    while (i <= mid && j <= right) {
+    while (i <= mid && j <= right) { // Compare reservation IDs
         if (reservations[i].getReservationID() <= reservations[j].getReservationID()) {
-
             temp.push_back(reservations[i]);
             i++;
-        }
-        else {
+        } else {
             temp.push_back(reservations[j]);
             j++;
         }
     }
 
-    // Copy any remaining items from the left section
-    while (i <= mid) {
+    while (i <= mid) { // Add remaining items from the left section
         temp.push_back(reservations[i]);
         i++;
     }
 
-    // Copy any remaining items from the right section
-    while (j <= right) {
+    while (j <= right) { // Add remaining items from the right section
         temp.push_back(reservations[j]);
         j++;
     }
 
-    // Copy the merged section back into the original vector
-    for (int k = 0; k < static_cast<int>(temp.size()); k++) {
+    for (int k = 0; k < static_cast<int>(temp.size()); k++) { // Copy sorted items back into the vector
         reservations[left + k] = temp[k];
     }
 }
 
-// Recursively sorts the vector using Merge sort
-void ReservationList::mergeSort(
-    std::vector<Reservation>& reservations,
-    int left, int right) const {
-
-    // Base case: one item is already sorted
-    if (left >= right) {
-        return;
-    }
-
-    // Find the middle of the section
-    int mid = left + (right - left) / 2;
-
-    // Sort the left half
-    mergeSort(reservations, left, mid);
-
-    // Sort the right half
-    mergeSort(reservations, mid + 1, right);
-
-    // Merge the sorted halves
-    merge(reservations, left, mid, right);
-}
-
-// Collects, sorts, and displays all reservations
-void ReservationList::displayReservationsMergeSort() const {
+void ReservationList::displayReservationsMergeSort() const { // Display reservations after applying Merge Sort
     std::vector<Reservation> reservations;
 
-    // Collect every reservation from the BST
     collectReservations(root, reservations);
 
-    if (reservations.empty()) {
-        std::cout << "No reservations found.\n";
-        return;
+    if (!reservations.empty()) {
+        mergeSort(reservations, 0, static_cast<int>(reservations.size()) - 1);
     }
 
-    // Sort the copied reservations by ID
-    mergeSort(reservations, 0,
-              static_cast<int>(reservations.size()) - 1);
-
-    // Display the sorted results
-    std::cout << "Reservations sorted by ID using Merge sort:\n";
-
-    for (const Reservation& res : reservations) {
-        res.display();
+    for (const Reservation& reservation : reservations) {
+        reservation.display();
     }
-}
-
-// Returns true when the tree is empty
-bool ReservationList::isEmpty() const {
-    return root == nullptr;
 }
