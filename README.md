@@ -1,8 +1,7 @@
 # Campus Resource Reservation System
 
 ## Project Overview
-This application is a menu‑driven C++ software system that manages campus resources such as study rooms, laptops, calculators and lab equipment. This menu‑driven C++ software system records reservations using a custom Singly Linked List. This application also handles waiting lists for campus resources with custom FIFO Queues. This application keeps a cancellation history. Supports undo actions, by using a custom LIFO Stack.
----
+****This program is an interactive menu-driven C++ computer application used to manage campus facilities like classrooms, laptops, and laboratory equipment. The program makes use of a customized Binary Search Tree (BST) for storing current reservations, a customized FIFO Queue for handling waiting list, and a customized LIFO Stack for recording cancellation history and performing undo operations. The program uses customized Merge sort and Binary search methods; it does not use any C++ standard library sorting and searching methods.******
 
 ## Folder Structure
 ```text
@@ -33,10 +32,11 @@ Project1/
 ```
 ## Data Structure Used
 - std::vector: Stores the central resource inventory loaded from external data files.
-- Custom Singly linked List: Dynamically manages all active student reservations across the entire system.
+- Custom Binary Search Tree (BST): Manages all active student reservations for faster O(log N) lookups, insertions, and deletions.
 - Custom FIFO Queue: Handles waitlisted students in First-In, First-Out order when an item is unavailable.
-- Custom LIFO Stack: Tracks system-wide cancelled reservation to enable Last-In, First-Out undo Functionality.
-
+- Custom LIFO Stack: Tracks system-wide canceled reservation to enable Last-In, First-Out undo Functionality.
+- Merge Sort: Custom sorting implementation to sort Resource objects by ID and Reservation objects for display.
+- Binary Search: Quickly locates resources by ID within sorted collections.
 ## Execution Instructions
 1. Open your terminal and navigate to the project root directory:
 ```bash
@@ -46,7 +46,7 @@ cd Project1
 ```bash
 g++ -std=c++11 src/*.cpp -Iinclude -o app
 ```
-4. Run the compiled executable:
+3. Run the compiled executable:
 ```bash
 ./app
 ```
@@ -71,7 +71,7 @@ The application imports resource and reservation data from the `data/` folder.
 305|1005|Emma Davis|R109|09/19/2026
 ```
 
-## Features Supported in Milestone 1
+## Features Supported:
 1. Resource Inventory: Reads the item file and shows real-time availability.
 2. Active Booking: Reserves free items and saves them directly to the main linked list.
 3. Waitlists: Automatically puts students in a FIFO queue when a resource is full.
