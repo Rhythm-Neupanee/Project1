@@ -1,4 +1,3 @@
-
 #include "../include/Resource.h"
 #include <iostream>
 #include <utility>
