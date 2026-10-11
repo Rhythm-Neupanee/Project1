@@ -1,10 +1,7 @@
-
 #include "../include/Reservation.h"
 #include <iostream>
 #include <utility>
 #include <vector>
-
-Reservation::Reservation() = default; // Default constructor
 
 // Constructor
 Reservation::Reservation(std::string reservationID, std::string studentID, std::string studentName, std::string resourceID, std::string date)
@@ -35,7 +32,7 @@ void Reservation::display() const { // Display reservation information
     std::cout << "Reservation ID: " << reservationID << " | Student ID: " << studentID << " | Student Name: " << studentName << " | Resource ID: " << resourceID << " | Date: " << date << "\n";
 }
 
-ReservationNode::ReservationNode(const Reservation& reservation): data(reservation), left(nullptr), right(nullptr) {} // Create a BST node
+// ReservationNode::ReservationNode(const Reservation& reservation): data(reservation), left(nullptr), right(nullptr) {} // Create a BST node
 
 ReservationList::ReservationList() : root(nullptr) {} // Constructor for the reservation BST
 
@@ -71,7 +68,7 @@ ReservationNode* ReservationList::insertNode(ReservationNode* node, const Reserv
     return node; // Duplicate reservation IDs are ignored
 }
 
-Reservation* ReservationList::findReservation(const std::string& reservationID) { // Search for a reservation by ID in the BST
+Reservation* ReservationList::findReservation(const std::string& reservationID) const{ // Search for a reservation by ID in the BST
     ReservationNode* current = root;
 
     while (current != nullptr) {
@@ -97,16 +94,20 @@ ReservationNode* ReservationList::findMinimum(ReservationNode* node) { // Find t
     return node;
 }
 
-ReservationNode* ReservationList::removeNode(ReservationNode* node, const std::string& reservationID){ // Remove a reservation from the BST
+ReservationNode* ReservationList::removeNode(ReservationNode* node, const std::string& reservationID, Reservation& removedRes, bool& found){ // Remove a reservation from the BST
     if (node == nullptr) {
         return nullptr;
     }
 
     if (reservationID < node->data.getReservationID()) {
-        node->left = removeNode(node->left, reservationID);
+        // FIX: Passed removedRes and found to the recursive left search
+        node->left = removeNode(node->left, reservationID, removedRes, found);
     } else if (reservationID > node->data.getReservationID()) {
-        node->right = removeNode(node->right, reservationID);
+        // FIX: Passed removedRes and found to the recursive right search
+        node->right = removeNode(node->right, reservationID, removedRes, found);
     } else {
+        found = true;
+        removedRes = node->data; //capture date before deletion
 
         if (node->left == nullptr) { // Node has no left child
             ReservationNode* temp = node->right;
@@ -123,22 +124,22 @@ ReservationNode* ReservationList::removeNode(ReservationNode* node, const std::s
 
         ReservationNode* temp = findMinimum(node->right); // Node has two children
         node->data = temp->data;
-        node->right = removeNode(node->right, temp->data.getReservationID());
+
+        // FIX: Passed removedRes and found to the recursive replacement search
+        node->right = removeNode(node->right, temp->data.getReservationID(), removedRes, found);
     }
 
     return node;
 }
 
-bool ReservationList::removeReservation(const std::string& reservationID) { // Public function to remove a reservation
-    if (findReservation(reservationID) == nullptr) {
-        return false;
-    }
+bool ReservationList::removeReservation(const std::string& reservationID, Reservation& removedReservation) { // Public function to remove a reservation
+    bool found = false;
+    root = removeNode(root, reservationID, removedReservation, found);
 
-    root = removeNode(root, reservationID);
-    return true;
+    return found;
 }
 
-void ReservationList::displayReservations() const { // Display reservations in ascending ID order
+void ReservationList::displayAllReservations() const { // Display reservations in ascending ID order
     displayInOrder(root);
 }
 
@@ -161,9 +162,8 @@ void ReservationList::collectReservations(ReservationNode* node, std::vector<Res
         return;
     }
 
-    reservations.push_back(node->data);
-
     collectReservations(node->left, reservations);
+    reservations.push_back(node->data);
     collectReservations(node->right, reservations);
 }
 
@@ -176,7 +176,6 @@ void ReservationList::mergeSort(std::vector<Reservation>& reservations, int left
 
     mergeSort(reservations, left, mid);
     mergeSort(reservations, mid + 1, right);
-
     merge(reservations, left, mid, right);
 }
 
