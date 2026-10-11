@@ -35,39 +35,37 @@ struct ReservationNode {
     ReservationNode* left;
     ReservationNode* right;
 
-    //initializes the node with reservation data and empty children 
+    //initializes the node with reservation data and empty children
     ReservationNode(const Reservation& res)
         : data(res), left(nullptr), right(nullptr) {}
 };
 
-//manage reservations using a binary seatvh tree
+//manage reservations using a binary search tree
 class ReservationList {
 private:
     ReservationNode* root; //points to the first node to the tree
 
     ReservationNode* insertNode(ReservationNode* node, const Reservation& res); //inserts reservation in the correct position by ID
 
-    ReservationNode* findNode(ReservationNode* node, const std::string& reservationID) const; //searches for reservation by ID
+    ReservationNode *findMinimum(ReservationNode *node); //finds the smallest ID in a subtree
 
-    ReservationNode* removeNode(ReservationNode* node, const std::string& reservationID); //removes a reservation while maintaining a BST ordering
+    ReservationNode* removeNode(ReservationNode* node, const std::string& reservationID, Reservation& removedRes, bool& found); //removes a reservation while maintaining a BST ordering
 
-    ReservationNode* findMin(ReservationNode* node) const; //finds the smallest ID in a subtree 
-
-    void destroyTree(ReservationNode* node); //deletes all nodes to prevent memory leaks 
+    void destroyTree(ReservationNode* node); //deletes all nodes to prevent memory leaks
 
     void displayInOrder(ReservationNode* node) const; //displays reservations in ascending ID order
 
-    void collectReservations(ReservationNode* node, std::vector<Reservation>& reservations) const;// Merge sort helper functions 
+    void collectReservations(ReservationNode* node, std::vector<Reservation>& reservations) const;// Merge sort helper functions
 
-    void mergeSort(std::vector<Reservation>& reservations, int left, int right);
+    void mergeSort(std::vector<Reservation> &reservations, int left, int right) const;
 
-    void merge(std::vector<Reservation>& reservations, int left, int mid, int right);
+    void merge(std::vector<Reservation> &reservations, int left, int mid, int right) const;
 
 public:
 
     ReservationList(); //creates an empty reservation tree
 
-    ~ReservationList(); //frees the trees dynamically allocated notes 
+    ~ReservationList(); //frees the trees dynamically allocated notes
 
     //prevents copying the tree, which could cause memory errors
     ReservationList(const ReservationList&) = delete;
@@ -78,20 +76,22 @@ public:
 
     //removes reservation and saves information
     //returns true if found and renewed, false if anything else
-    bool removeReservation(const std::string& reservationID,Reservation& removedReservation);
+    bool removeReservation(const std::string &reservationID, Reservation& removedReservation);
 
     //returns a pointer to the reservation if found
     //returns nullptr if the reservation does not exist
     Reservation* findReservation(const std::string& reservationID) const;
 
-    //displays all reservation in ascending ID order 
+    //displays all reservation in ascending ID order
     void displayAllReservations() const;
 
-    // Displays reservations sorted using Merge sort 
+    // Displays reservations sorted using Merge sort
     void displayReservationsMergeSort() const;
 
     //returns true if the tree is empty
     bool isEmpty() const;
+
+    void collectAll(std::vector<Reservation>& list) const { collectReservations(root, list); }
 };
 
 #endif
