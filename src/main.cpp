@@ -6,14 +6,16 @@
 // Function to display the main menu
 static void displayMenu() {
     std::cout << "\n--- Campus Resource Reservation System ---\n";
-    std::cout << "1. View Resources\n";
-    std::cout << "2. Create Reservation\n";
-    std::cout << "3. Cancel Reservation\n";
-    std::cout << "4. View Active Reservations\n";
-    std::cout << "5. View Waiting Lists\n";
-    std::cout << "6. Undo Cancellation\n";
-    std::cout << "7. View Cancellation History\n";
-    std::cout << "8. Exit\n";
+    std::cout << "1. View Resources (Unsorted)\n";
+    std::cout << "2. View resources (Shorted)\n";
+    std::cout << "3. Create Reservation\n";
+    std::cout << "4. Cancel Reservation\n";
+    std::cout << "5. View Active Reservations\n";
+    std::cout << "6. View Active Reservations (Sorted)\n";
+    std::cout << "7. View Waiting Lists\n";
+    std::cout << "8. Undo Cancellation\n";
+    std::cout << "9. View Cancellation History\n";
+    std::cout << "10. Save and Exit\n";
     std::cout << "Enter Choice: ";
 }
 
@@ -33,8 +35,15 @@ int main() {
             continue;
         }
 
-        if (choice == 8) {
-            std::cout << "Exiting the program. Goodbye!\n";
+        if (choice == 10) {
+            std::cout << "Saving changes to data files.\n";
+            bool resSaved = manager.saveResourcesToFile("data/resources.txt");
+            bool revSaved = manager.saveReservationsToFile("data/reservations.txt");
+            if (resSaved && revSaved) {
+                std::cout << "Data saved. Exiting the program. Goodbye!\n";
+            } else {
+                std::cout << "Data not saved. Exiting the program.\n";
+            }
             break;
         }
         std::string studentID, studentName, resourceID, date, reservationID; // Variables to hold user input
@@ -44,6 +53,9 @@ int main() {
                 manager.displayResources();
                 break;
             case 2:
+                manager.displayResourcesSortedById();
+                break;
+            case 3:
                 std::cout << "Enter Student ID: ";
                 std::cin >> studentID;
                 std::cout << "Enter Student Name: ";
@@ -55,21 +67,24 @@ int main() {
                 std::cin >> date;
                 manager.createReservation(studentID, studentName, resourceID, date);
                 break;
-            case 3:
+            case 4:
                 std::cout << "Enter Reservation ID to cancel: ";
                 std::cin >> reservationID;
                 manager.cancelReservation(reservationID);
                 break;
-            case 4:
+            case 5:
                 manager.displayActiveReservations();
                 break;
-            case 5:
-                manager.displayWaitingLists();
-                break;
             case 6:
-                manager.undoCancellation();
+                manager.displayReservationsSortedByMergeSort();
                 break;
             case 7:
+                manager.displayWaitingLists();
+                break;
+            case 8:
+                manager.undoCancellation();
+                break;
+            case 9:
                 manager.displayCancellationHistory();
                 break;
             default:
