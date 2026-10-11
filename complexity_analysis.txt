@@ -1,14 +1,16 @@
 Complexity Analysis
 
-Reservation insertion complexity
-Data structure: Singly linked list
-Time complexity: O(1)
-Description: We insert a new reservation node directly at the head of the list which involves constant- time pointer adjustment. This does not depend on the number of active reservations currently stored.
+Merge Sort
+Time Complexity: O(N log N)
+Description: The vector is recursively divided in half O(log N) times, and merging the divided arrays takes linear O(N) time.
 
-Reservation removal complexity
-Data structure: Singly linked list
-Time complexity: O(N)
-Description: For the removal of the system must search for the matching Reservation ID. In the worst case scenario which is when the target is at the end of the list or doesn’t exit, this requires a full linear access for all N active reservation nodes before removing or unlinking the target.
+Binary Search Tree
+Time Complexity: O(log N) for Average and  O(N) for worse case.
+Description: It takes O(log N) time complexity to insert, search for, and delete the node from the reservation tree since, during each step, the algorithm divides the search space by half. However, in the worst case scenario, in which there is a totally skewed and one-sided tree, it will take O(N) time complexity.
+
+Binary Search
+Time complexity: O(Log N)
+Description: The index need to searched is halved at each step until the target is found.
 
 Waiting-list processing complexity
 Data structure: First-In, First-out(FIFO) Queue
