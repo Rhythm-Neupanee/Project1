@@ -1,0 +1,21 @@
+------------------
+Marcos Guevara                   | BST & Custom Algorithms  | Upgraded ReservationList to a BST.     | Tested BST traversal and | 23 commits authored	|
+(GitHub: marcosg565)             |                          | Implemented Merge Sort & Binary Search.| sorting accuracy         | 				|
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Rhythm Neupane                   | File I/O, Stack, &       | Implemented File I/O persistence.      | Comprehensive CLI, memory| Repository Owner; 34 commits; |
+(GitHub: Rhythm-Neupanee)        | System Integration       | Maintained Stack & built core logic.   | leak, & integration tests| 16 PRs merged			|
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Patrick Ezeli                    | Main Driver, Queue, &    | Updated main.cpp driver menu. Built    | Tested interactive menu, | 11 commits authored		|
+(GitHub: classicm425-collab)     | System Reports           | WaitingList queue and System Reports.  | queue, & auto-assignment | 				|
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Detailed Summaries:
+
+Marcos Guevara (marcosg565):
+Marcos handled the task of improving the internal data structures and designing the customized algorithms. He moved the existing reservations from the simple Linked List implementation to the customized Binary Search Tree (BST). Marcos wrote the custom O(N log N) Merge Sort algorithm for sorting of resources and reservations, and the Binary Search algorithm for searching resources.
+
+Rhythm Neupane (Rhythm-Neupanee):
+Rhythm was responsible for integrating the system and ensuring that it had data persistency. Rhythm updated the ReservationManager class to have proper file input/output capabilities which enabled the system to have data persistency through writing and reading pipe delimited data into resources.txt and reservations.txt. He also maintained the CancellationHistory LIFO Stack for the undo feature.
+
+Patrick Ezeli (classicm425-collab):
+Patrick has designed and added features to the interactive console interface of main.cpp, including all the thirteen menu options. Patrick has continued with the custom WaitingList FIFO queue design and ensured that the auto-assignment feature worked effectively to pass over any freed resources to the waiting list of students. Finally, Patrick has added the System Reporting feature (Resource Utilization, Most Requested Resources, and Waiting-List Statistics).
