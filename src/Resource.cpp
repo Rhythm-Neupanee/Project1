@@ -3,9 +3,10 @@
 #include <utility>
 #include <vector>
 
-Resource::Resource() : isAvailable(true) {} // Default constructor
+Resource::Resource() : isAvailable(true), reservationCount(0) {
+} // Default constructor
 
-Resource::Resource(std::string ID, std::string Name, std::string Type, bool Availability) : id(std::move(ID)), name(std::move(Name)), type(std::move(Type)), isAvailable(Availability) {} // Constructor
+Resource::Resource(std::string ID, std::string Name, std::string Type, bool Availability) : id(std::move(ID)), name(std::move(Name)), type(std::move(Type)), isAvailable(Availability), reservationCount(0) {} // Constructor
 
 std::string Resource::getId() const  {// Getters
     return id;
@@ -117,4 +118,12 @@ Resource* Resource::binarySearchResource(const std::vector<Resource*>& resources
     }
 
     return nullptr; // Resource was not found
+}
+
+int Resource::getReservationCount() const {
+    return reservationCount;
+}
+
+void Resource::incrementReservationCount() {
+    reservationCount++;
 }
