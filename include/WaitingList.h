@@ -26,5 +26,6 @@ public:
     bool dequeue(std::string& id, std::string& name);   // Remove a student from the waiting list
     bool isEmpty() const;    // Check if the waiting list is empty
     void display() const;    // Display the waiting list
+    int getSize() const; // Returns the number of students waiting
 };
 #endif
