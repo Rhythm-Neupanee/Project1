@@ -108,6 +108,15 @@ bool ReservationManager::loadReservationsFromFile(const std::string& filename) {
         Reservation newReservation(fullResID, studentID, studentName, resourceID, date);
         activeReservations.addReservation(newReservation);
 
+        // Increment the usage counter for reporting
+        for (auto& res : resources) {
+            if (res.getId() == resourceID) {
+                res.incrementReservationCount();
+                res.setAvailability(false);
+                break;
+            }
+        }
+
         // mark the associated resource as taken since it's already booked
         for (auto& res : resources) {
             if (res.getId() == resourceID) {
@@ -139,10 +148,10 @@ void ReservationManager::displayResourcesSortedById() { // Sorts the resources b
     std::vector<Resource*> resList;
 
     // gather pointers to the resources
-    for (auto& res : resources) {
+    resList.reserve(resources.size());
+for (auto& res : resources) {
         resList.push_back(&res);
     }
-
     // sort them using our custom algorithm
     Resource::mergeSortResources(resList);
 
@@ -180,6 +189,7 @@ void ReservationManager::createReservation(const std::string& studentID, const s
         std::string reservationID = "R" + std::to_string(reservationCounter++);
         Reservation newReservation(reservationID, studentID, studentName, resourceID, date);
         activeReservations.addReservation(newReservation);
+        resource->incrementReservationCount();
 
         std::cout << "Reservation created successfully. Reservation ID: " << reservationID << "\n";
     } else {
@@ -273,4 +283,94 @@ void ReservationManager::displayWaitingLists() const { // display all queues
 void ReservationManager::displayCancellationHistory() const { // display the undo stack
     std::cout << "\nCancellation History:\n";
     cancellationHistory.display();
+}
+
+//reporting feature
+
+// --- REPORTING FEATURES ---
+
+void ReservationManager::generateResourceUtilizationReport() { // Removed const
+    std::cout << "\n--- Resource Utilization Report ---\n";
+    for (auto& res : resources) { // Removed const
+        std::cout << "ID: " << res.getId()
+                  << " | Name: " << res.getName()
+                  << " | Total Reservations: " << res.getReservationCount() << "\n";
+    }
+}
+
+void ReservationManager::generateMostRequestedResourcesReport() { // Removed const
+    std::cout << "\n--- Most Requested Resources ---\n";
+    if (resources.empty()) {
+        std::cout << "No resources available to report.\n";
+        return;
+    }
+
+    int maxCount = 0;
+    // Find the highest reservation count
+    for (auto& res : resources) { // Removed const
+        if (res.getReservationCount() > maxCount) {
+            maxCount = res.getReservationCount();
+        }
+    }
+
+    if (maxCount == 0) {
+        std::cout << "No reservations have been made yet.\n";
+        return;
+    }
+
+    // Print all resources that share the highest count
+    for (auto& res : resources) { // Removed const
+        if (res.getReservationCount() == maxCount) {
+            std::cout << "ID: " << res.getId() << " - " << res.getName()
+                      << " (Requested " << maxCount << " times)\n";
+        }
+    }
+}
+
+void ReservationManager::generateWaitingListStatisticsReport() { // Removed const
+    std::cout << "\n--- Waiting-List Statistics ---\n";
+    for (auto& res : resources) { // Removed const
+        std::cout << "ID: " << res.getId() << " - " << res.getName()
+                  << " | Students Waiting: " << res.getWaitingQueue().getSize() << "\n";
+    }
+}
+
+void ReservationManager::searchResourceById() {
+    std::string targetID;
+    std::cout << "Enter Resource ID to search: ";
+    std::cin >> targetID;
+
+    // data needs to be sorted before performing a Binary Search
+    std::vector<Resource*> resList;
+    resList.reserve(resources.size());
+for (auto& res : resources) {
+        resList.push_back(&res);
+    }
+    Resource::mergeSortResources(resList); // Sort the pointers
+
+    // Call your custom Binary Search algorithm
+    Resource* foundResource = Resource::binarySearchResource(resList, targetID);
+
+    if (foundResource != nullptr) {
+        std::cout << "\nResource Found:\n";
+        foundResource->display();
+    } else {
+        std::cout << "\nResource with ID " << targetID << " not found.\n";
+    }
+}
+
+void ReservationManager::searchReservationById() const {
+    std::string resID;
+    std::cout << "Enter Reservation ID to search (e.g., R101): ";
+    std::cin >> resID;
+
+    // Call the binary search function built into your BST
+    Reservation* foundRes = activeReservations.findReservation(resID);
+
+    if (foundRes != nullptr) {
+        std::cout << "\nReservation Found:\n";
+        foundRes->display();
+    } else {
+        std::cout << "\nReservation " << resID << " not found.\n";
+    }
 }
