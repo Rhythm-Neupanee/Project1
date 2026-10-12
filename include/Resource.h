@@ -13,6 +13,7 @@ private:
     std::string type; // Category, such as laptop or study room
     bool isAvailable; // True if the resource is available
     WaitingList waitingQueue; // Queue of students waiting for this resource
+    int reservationCount;
 
 public:
     // Constructors
@@ -20,10 +21,10 @@ public:
     Resource(std::string ID, std::string Name, std::string Type, bool Availability = true);
 
     // Getter functions
-    [[nodiscard]] std::string getId() const;
-    [[nodiscard]] std::string getName() const;
-    [[nodiscard]] std::string getType() const;
-    [[nodiscard]] bool getAvailability() const;
+    std::string getId() const;
+    std::string getName() const;
+    std::string getType() const;
+    bool getAvailability() const;
 
     WaitingList& getWaitingQueue(); // Returns the waiting queue for this resource
 
@@ -37,6 +38,9 @@ public:
 
     static Resource* binarySearchResource(const std::vector<Resource*>& resources,const std::string& targetID); // Binary search: finds a resource by ID in a sorted vector
 
+    int getReservationCount() const;
+
+    void incrementReservationCount();
 private:
 
     static void mergeSortHelper(std::vector<Resource*>& resources, int left, int right); // Recursively divides and sorts the vector
