@@ -1,0 +1,31 @@
+User Guide - Campus Resource Reservation System
+
+How to use the program:
+When you run the code, you will see a main menu with 15 different options. Just type the number of what you want to do and hit Enter.
+
+--- Viewing the Inventory ---
+Option 1 (View Resources - Unsorted): This shows all the laptops, rooms, and equipment exactly how they are loaded from our text file.
+Option 2 (View Resources - Sorted): This does the exact same thing, but it sorts everything alphabetically by the Resource ID so it's easier to read.
+
+--- Handling Reservations ---
+Option 3 (Create Reservation): This lets a student book an item. You just type in your student ID, name, the resource ID you want, and the date. If the item is already taken by someone else, the system will automatically put you on the waiting list.
+Option 4 (Cancel Reservation): Enter a reservation ID to cancel it. If there is a student waiting in line for that specific item, our code will automatically give it to them and create a new reservation.
+Option 5 (View Active Reservations): Prints out a list of all current bookings.
+Option 6 (View Active Reservations - Sorted): Prints the active bookings, but sorted numerically by the reservation ID.
+
+--- Waitlists and Undo ---
+Option 7 (View Waiting Lists): Shows the names of the students who are currently stuck on the waiting list for items.
+Option 8 (Undo Cancellation): If you accidentally canceled a reservation, this option puts it right back on the active list (as long as the item hasn't been given to someone else yet).
+Option 9 (View Cancellation History): Shows a log of all the canceled bookings.
+
+--- System Reports ---
+Option 11 (Resource Utilization): This prints out every item and shows the total number of times it has been reserved.
+Option 12 (Most Requested Resources): This calculates which item is the most popular and prints it out.
+Option 13 (Waiting List Statistics): This just shows a simple number of how many students are currently waiting in line for each item.
+
+--- Searching ---
+Option 14 (Search Resource by ID): Type in a resource ID (like L10) and it will instantly print out the details for that specific item.
+Option 15 (Search Reservation by ID): Type in a reservation ID (like R101) to quickly find and display the details of that specific booking.
+
+--- Quitting ---
+Option 10 (Save and Exit): Always use this option to close the program! It saves all the new reservations and waitlists back into the text files so we don't lose any data when the program stops running.
