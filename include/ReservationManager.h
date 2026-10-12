@@ -39,5 +39,12 @@ public:
     void displayActiveReservations() const; // Display all active reservations
     void displayWaitingLists() const; // Display all waiting lists
     void displayCancellationHistory() const; // Display the cancellation history
+
+    void searchResourceById();
+    void searchReservationById() const;
+
+    void generateResourceUtilizationReport() ;
+    void generateMostRequestedResourcesReport();
+    void generateWaitingListStatisticsReport();
 };
 #endif
